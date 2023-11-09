@@ -1,10 +1,21 @@
 ﻿// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
+using Cooliemint.ApiServer.Mqtt;
+
 namespace Cooliemint.ApiServer.Services.Messaging.Pushover
 {
     public sealed class PushoverAccountStore
     {
+        private readonly IFileSystemService _fileSystemService;
+        private readonly JsonSerializerService _jsonSerializerService;
         private List<PushoverAccountDto> _pushoverAccounts = new();
+        private const string ConfigurationFile = "pushover_accounts.json";
+
+        public PushoverAccountStore(IFileSystemService fileSystemService, JsonSerializerService jsonSerializerService)
+        {
+            _fileSystemService = fileSystemService ?? throw new ArgumentNullException(nameof(fileSystemService));
+            _jsonSerializerService = jsonSerializerService ?? throw new ArgumentNullException(nameof(jsonSerializerService));
+        }
 
         public void Add(PushoverAccountDto pushoverAccount)
         {
@@ -38,6 +49,8 @@ namespace Cooliemint.ApiServer.Services.Messaging.Pushover
 
             existingPushoverAccount.ApplicationKey = pushoverAccount.ApplicationKey;
             existingPushoverAccount.UserKey = pushoverAccount.UserKey;
+
+            PersistAccounts();
         }
 
         public void Remove(PushoverAccountDto pushoverAccount)
@@ -55,6 +68,7 @@ namespace Cooliemint.ApiServer.Services.Messaging.Pushover
             }
 
             _pushoverAccounts.Remove(existingAccount);
+            PersistAccounts();
         }
 
         public PushoverAccountDto? Get(int id)
@@ -65,6 +79,29 @@ namespace Cooliemint.ApiServer.Services.Messaging.Pushover
         public List<PushoverAccountDto> GetAll()
         {
             return _pushoverAccounts;
+        }
+
+        public void Initialize()
+        {
+            try
+            {
+                var storedAccounts = _jsonSerializerService.Deserialize<List<PushoverAccountDto>>(
+                    _fileSystemService.ReadAllText(ConfigurationFile));
+
+                if (storedAccounts?.Any() == true)
+                {
+                    _pushoverAccounts.AddRange(storedAccounts);
+                }
+            }
+            catch
+            {
+                // just swallow, it might be the first time to read this file
+            }
+        }
+
+        private void PersistAccounts()
+        {
+            _fileSystemService.WriteAllText(ConfigurationFile, _jsonSerializerService.Serialize(_pushoverAccounts));
         }
     }
 }

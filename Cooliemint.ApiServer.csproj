@@ -6,12 +6,26 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>17a0c98c-6e7d-4279-803d-db484f5d5d3a</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>.</DockerfileContext>
+    <PublishProfile>DefaultContainer</PublishProfile>
+    <AssemblyVersion>1.0.2</AssemblyVersion>
+    <ContainerImageTag>latest-arm</ContainerImageTag>
+    <ContainerRepository>tymoniden/cooliemint-api</ContainerRepository>
+    <ContainerRegistry>registry-1.docker.io</ContainerRegistry>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ContainerPort Include="80" Type="tcp" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <ContainerRuntimeIdentifier>linux-arm64</ContainerRuntimeIdentifier>
+    <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="7.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.13" />
+    <PackageReference Include="Microsoft.NET.Build.Containers" Version="7.0.403" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
     <PackageReference Include="MQTTnet" Version="4.3.1.873" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

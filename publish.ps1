@@ -1,0 +1,1 @@
+dotnet publish --arch arm64 --os linux -c Release

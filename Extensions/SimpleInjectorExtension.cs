@@ -9,7 +9,8 @@ namespace Cooliemint.ApiServer.Extensions
 {
     public static class SimpleInjectorExtension
     {
-        public static bool Sent { get; set; } 
+        public static bool FloodStatus { get; set; }
+        public static string LightStatus { get; set; } = string.Empty;
 
         public static void RegisterCooliemintServices(this IServiceCollection services)
         {
@@ -25,6 +26,7 @@ namespace Cooliemint.ApiServer.Extensions
             services.AddSingleton<JsonSerializerService>();
             services.AddSingleton<IMessageStore, MessageStore>();
             services.AddSingleton<ConfigurationService>();
+            services.AddSingleton<IFileSystemService, FileSystemService>();
         }
 
         public static void RegisterMessagingServices(this IServiceCollection services)
@@ -55,28 +57,46 @@ namespace Cooliemint.ApiServer.Extensions
             {
                 if (args.Title.Equals("shellies/shellyflood1/sensor/flood"))
                 {
+
                     var floodDetected = messageConverterService.ConvertPayload<bool>(args);
-                    
-                    Task.Run(async () =>
+                    if (FloodStatus != floodDetected)
                     {
-                        Debug.WriteLine("Sending pushover notification");
-                        await pushoverService.SendMessage(new AppNotification { Title = "Es ist was passiert", Message = "Wasser " + (floodDetected ? string.Empty : "nicht ")  + "im Keller" });
-                        Sent = true;
-                    });
+                        FloodStatus = floodDetected;
+
+                        Task.Run(async () =>
+                        {
+                            Debug.WriteLine("Sending pushover notification");
+                            await pushoverService.SendMessage(new AppNotification
+                            {
+                                Title = "Es ist was passiert",
+                                Message = "Wasser " + (floodDetected ? string.Empty : "nicht ") + "im Keller"
+                            });
+
+                        });
+                    }
                 }
 
                 if (args.Title.Equals("shellies/shellyplug2/relay/0"))
                 {
                     var lightStatus = messageConverterService.ConvertPayload<string>(args) ?? string.Empty;
-                    
-                    Task.Run(async () =>
+                    if (LightStatus != lightStatus)
                     {
-                        Debug.WriteLine("Sending pushover notification");
-                        await pushoverService.SendMessage(new AppNotification { Title = "Nachtischlampe geändert", Message = "Lampe ist jetzt " + (lightStatus.Equals("on") ? "an" : "aus!")});
-                        Sent = true;
-                    });
+                        LightStatus = lightStatus;
+
+                        Task.Run(async () =>
+                        {
+                            Debug.WriteLine("Sending pushover notification");
+                            await pushoverService.SendMessage(new AppNotification
+                            {
+                                Title = "Nachtischlampe geändert",
+                                Message = "Lampe ist jetzt " + (lightStatus.Equals("on") ? "an" : "aus!")
+                            });
+                        });
+                    }
                 }
             };
+
+            services.GetRequiredService<PushoverAccountStore>().Initialize();
         }
     }
 }
