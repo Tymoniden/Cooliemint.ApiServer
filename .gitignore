@@ -1,3 +1,5 @@
 .vs
 bin
 obj
+.config/dotnet-tools.json
+Cooliemint.ApiServer.csproj.user
