@@ -1,5 +1,4 @@
 ﻿using CoolieMint.WebApp.Services.Notification.Pushover;
-using System;
 
 namespace Cooliemint.ApiServer.Services.Messaging.Pushover
 {
@@ -20,7 +19,7 @@ namespace Cooliemint.ApiServer.Services.Messaging.Pushover
                 message = appNotification.Message
             };
 
-            if(appNotification?.Uri != null)
+            if(appNotification.Uri != null)
             {
                 content.url = appNotification.Uri.ToString();
                 content.url_title = appNotification?.UriName ?? appNotification!.Uri.ToString();

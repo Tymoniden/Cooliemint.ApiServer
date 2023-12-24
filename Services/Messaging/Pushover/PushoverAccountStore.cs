@@ -6,9 +6,9 @@ namespace Cooliemint.ApiServer.Services.Messaging.Pushover
 {
     public sealed class PushoverAccountStore
     {
+        private readonly List<PushoverAccountDto> _pushoverAccounts = new();
         private readonly IFileSystemService _fileSystemService;
         private readonly JsonSerializerService _jsonSerializerService;
-        private List<PushoverAccountDto> _pushoverAccounts = new();
         private const string ConfigurationFile = "pushover_accounts.json";
 
         public PushoverAccountStore(IFileSystemService fileSystemService, JsonSerializerService jsonSerializerService)
@@ -37,7 +37,7 @@ namespace Cooliemint.ApiServer.Services.Messaging.Pushover
 
             if (existingPushoverAccount == null)
             {
-                var lastId = _pushoverAccounts.OrderByDescending(account => account.Id).FirstOrDefault()?.Id ?? 0;
+                var lastId = _pushoverAccounts.MaxBy(account => account.Id)?.Id ?? 0;
 
                 existingPushoverAccount = new PushoverAccountDto
                 {

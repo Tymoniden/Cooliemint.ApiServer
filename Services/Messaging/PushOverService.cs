@@ -1,26 +1,34 @@
 ﻿using Cooliemint.ApiServer.Services.Messaging.Pushover;
-using CoolieMint.WebApp.Services.Notification.Pushover;
 
 namespace Cooliemint.ApiServer.Services.Messaging
 {
     public class PushOverService : IPushOverService
     {
-        private readonly IPushoverHttpRequestFactory _pushoverHttpRequestFactory;
         private readonly PushoverHttpClient _pushoverHttpClient;
         private readonly PushoverAccountStore _pushoverAccountStore;
+        private readonly PushoverMessageFactory _messageFactory;
 
-        public PushOverService(IPushoverHttpRequestFactory pushoverHttpRequestFactory, PushoverHttpClient pushoverHttpClient, PushoverAccountStore pushoverAccountStore)
+        public PushOverService(PushoverHttpClient pushoverHttpClient, PushoverAccountStore pushoverAccountStore, PushoverMessageFactory messageFactory)
         {
-            _pushoverHttpRequestFactory = pushoverHttpRequestFactory ?? throw new ArgumentNullException(nameof(pushoverHttpRequestFactory));
             _pushoverHttpClient = pushoverHttpClient ?? throw new ArgumentNullException(nameof(pushoverHttpClient));
             _pushoverAccountStore = pushoverAccountStore ?? throw new ArgumentNullException(nameof(pushoverAccountStore));
+            _messageFactory = messageFactory ?? throw new ArgumentNullException(nameof(messageFactory));
         }
 
-        public async Task SendMessage(AppNotification appNotification)
+        public async Task SendMessage(AppNotification appNotification, CancellationToken cancellationToken)
+        {
+            var message = _messageFactory.CreateMessage(appNotification);
+            foreach(var account in _pushoverAccountStore.GetAll())
+            {
+                await _pushoverHttpClient.Send(message, account.ApplicationKey, account.UserKey, cancellationToken);
+            }
+        }
+
+        public async Task SendMessage(PushoverMessageDto message, CancellationToken cancellationToken)
         {
             foreach(var account in _pushoverAccountStore.GetAll())
             {
-                await _pushoverHttpClient.Send(_pushoverHttpRequestFactory.CreateHttpRequest(appNotification, account.ApplicationKey, account.UserKey));
+                await _pushoverHttpClient.Send(message, account.ApplicationKey, account.UserKey, cancellationToken);
             }
         }
     }

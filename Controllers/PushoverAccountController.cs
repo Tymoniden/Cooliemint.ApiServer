@@ -1,4 +1,6 @@
-﻿using Cooliemint.ApiServer.Services.Messaging.Pushover;
+﻿using System.Formats.Asn1;
+using Cooliemint.ApiServer.Services.Messaging;
+using Cooliemint.ApiServer.Services.Messaging.Pushover;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,10 +12,12 @@ namespace Cooliemint.ApiServer.Controllers
     public class PushoverAccountController : ControllerBase
     {
         private readonly PushoverAccountStore _pushoverAccountStore;
+        private readonly IPushOverService _pushOverService;
 
-        public PushoverAccountController(PushoverAccountStore pushoverAccountStore)
+        public PushoverAccountController(PushoverAccountStore pushoverAccountStore, IPushOverService pushOverService)
         {
             _pushoverAccountStore = pushoverAccountStore ?? throw new ArgumentNullException(nameof(pushoverAccountStore));
+            _pushOverService = pushOverService ?? throw new ArgumentNullException(nameof(pushOverService));
         }
 
         // GET: api/<PushoverAccountController>
@@ -50,6 +54,12 @@ namespace Cooliemint.ApiServer.Controllers
         public void Delete(int id)
         {
             _pushoverAccountStore.Remove(id);
+        }
+
+        [HttpPost("Message")]
+        public async Task SendMessage(PushoverMessageDto message, CancellationToken cancellationToken)
+        {
+            await _pushOverService.SendMessage(message, cancellationToken);
         }
     }
 }

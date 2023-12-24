@@ -36,6 +36,7 @@ namespace Cooliemint.ApiServer.Extensions
             services.AddSingleton<IPushoverHttpRequestFactory, PushoverHttpRequestFactory>();
             services.AddSingleton<IPushoverHttpContentFactory, PushoverHttpContentFactory>();
             services.AddSingleton<PushoverAccountStore>();
+            services.AddSingleton<PushoverMessageFactory>();
         }
 
         public static void RegisterBackgroundServices(this IServiceCollection services) 
@@ -70,7 +71,7 @@ namespace Cooliemint.ApiServer.Extensions
                             {
                                 Title = "Es ist was passiert",
                                 Message = "Wasser " + (floodDetected ? string.Empty : "nicht ") + "im Keller"
-                            });
+                            }, CancellationToken.None);
 
                         });
                     }
@@ -90,12 +91,13 @@ namespace Cooliemint.ApiServer.Extensions
                             {
                                 Title = "Nachtischlampe geändert",
                                 Message = "Lampe ist jetzt " + (lightStatus.Equals("on") ? "an" : "aus!")
-                            });
+                            }, CancellationToken.None);
                         });
                     }
                 }
             };
 
+            services.GetRequiredService<ConfigurationService>().Initialize();
             services.GetRequiredService<PushoverAccountStore>().Initialize();
         }
     }

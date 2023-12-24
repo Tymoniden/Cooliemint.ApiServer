@@ -1,7 +1,10 @@
-﻿namespace Cooliemint.ApiServer.Services.Messaging
+﻿using Cooliemint.ApiServer.Services.Messaging.Pushover;
+
+namespace Cooliemint.ApiServer.Services.Messaging
 {
     public interface IPushOverService
     {
-        Task SendMessage(AppNotification appNotification);
+        Task SendMessage(AppNotification appNotification, CancellationToken cancellationToken);
+        Task SendMessage(PushoverMessageDto message, CancellationToken cancellationToken);
     }
 }
