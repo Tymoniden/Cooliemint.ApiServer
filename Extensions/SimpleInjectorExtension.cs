@@ -1,9 +1,9 @@
 ﻿using Cooliemint.ApiServer.Mqtt;
 using Cooliemint.ApiServer.Services;
+using Cooliemint.ApiServer.Services.Automation;
 using Cooliemint.ApiServer.Services.Messaging;
 using Cooliemint.ApiServer.Services.Messaging.Pushover;
 using CoolieMint.WebApp.Services.Notification.Pushover;
-using System.Diagnostics;
 
 namespace Cooliemint.ApiServer.Extensions
 {
@@ -18,6 +18,7 @@ namespace Cooliemint.ApiServer.Extensions
             services.RegisterMqttServices();
             services.RegisterMessagingServices();
             services.RegisterBackgroundServices();
+            services.RegisterAutomationServices();
         }
 
         public static void RegisterSharedServices(this IServiceCollection services)
@@ -27,6 +28,7 @@ namespace Cooliemint.ApiServer.Extensions
             services.AddSingleton<IMessageStore, MessageStore>();
             services.AddSingleton<ConfigurationService>();
             services.AddSingleton<IFileSystemService, FileSystemService>();
+            services.AddSingleton<ValueStore>();
         }
 
         public static void RegisterMessagingServices(this IServiceCollection services)
@@ -37,6 +39,11 @@ namespace Cooliemint.ApiServer.Extensions
             services.AddSingleton<IPushoverHttpContentFactory, PushoverHttpContentFactory>();
             services.AddSingleton<PushoverAccountStore>();
             services.AddSingleton<PushoverMessageFactory>();
+        }
+
+        public static void RegisterAutomationServices(this IServiceCollection services)
+        {
+            services.AddSingleton<ActionManager>();
         }
 
         public static void RegisterBackgroundServices(this IServiceCollection services) 
@@ -54,47 +61,49 @@ namespace Cooliemint.ApiServer.Extensions
             var pushoverService = services.GetRequiredService<IPushOverService>();
             var messageConverterService = services.GetRequiredService<IMessageConverterService>();
 
-            services.GetRequiredService<IMessageStore>().MessageReceived += (sender, args) => 
+            services.GetRequiredService<IMessageStore>().MessageReceived += (sender, args) =>
             {
-                if (args.Title.Equals("shellies/shellyflood1/sensor/flood"))
-                {
+                Task.Run(async() => await services.GetRequiredService<ActionManager>().HandleMqttMessage(args, CancellationToken.None).ConfigureAwait(false));
 
-                    var floodDetected = messageConverterService.ConvertPayload<bool>(args);
-                    if (FloodStatus != floodDetected)
-                    {
-                        FloodStatus = floodDetected;
+                //if (args.Title.Equals("shellies/shellyflood1/sensor/flood"))
+                //{
 
-                        Task.Run(async () =>
-                        {
-                            Debug.WriteLine("Sending pushover notification");
-                            await pushoverService.SendMessage(new AppNotification
-                            {
-                                Title = "Es ist was passiert",
-                                Message = "Wasser " + (floodDetected ? string.Empty : "nicht ") + "im Keller"
-                            }, CancellationToken.None);
+                //    var floodDetected = messageConverterService.ConvertPayload<bool>(args);
+                //    if (FloodStatus != floodDetected)
+                //    {
+                //        FloodStatus = floodDetected;
 
-                        });
-                    }
-                }
+                //        Task.Run(async () =>
+                //        {
+                //            Debug.WriteLine("Sending pushover notification");
+                //            await pushoverService.SendMessage(new AppNotification
+                //            {
+                //                Title = "Es ist was passiert",
+                //                Message = "Wasser " + (floodDetected ? string.Empty : "nicht ") + "im Keller"
+                //            }, CancellationToken.None);
 
-                if (args.Title.Equals("shellies/shellyplug2/relay/0"))
-                {
-                    var lightStatus = messageConverterService.ConvertPayload<string>(args) ?? string.Empty;
-                    if (LightStatus != lightStatus)
-                    {
-                        LightStatus = lightStatus;
+                //        });
+                //    }
+                //}
 
-                        Task.Run(async () =>
-                        {
-                            Debug.WriteLine("Sending pushover notification");
-                            await pushoverService.SendMessage(new AppNotification
-                            {
-                                Title = "Nachtischlampe geändert",
-                                Message = "Lampe ist jetzt " + (lightStatus.Equals("on") ? "an" : "aus!")
-                            }, CancellationToken.None);
-                        });
-                    }
-                }
+                //if (args.Title.Equals("shellies/shellyplug2/relay/0"))
+                //{
+                //    var lightStatus = messageConverterService.ConvertPayload<string>(args) ?? string.Empty;
+                //    if (LightStatus != lightStatus)
+                //    {
+                //        LightStatus = lightStatus;
+
+                //        Task.Run(async () =>
+                //        {
+                //            Debug.WriteLine("Sending pushover notification");
+                //            await pushoverService.SendMessage(new AppNotification
+                //            {
+                //                Title = "Nachtischlampe geändert",
+                //                Message = "Lampe ist jetzt " + (lightStatus.Equals("on") ? "an" : "aus!")
+                //            }, CancellationToken.None);
+                //        });
+                //    }
+                //}
             };
 
             services.GetRequiredService<ConfigurationService>().Initialize();

@@ -1,0 +1,11 @@
+﻿@Cooliemint.ApiServer_HostAddress = http://localhost:5257
+
+POST {{Cooliemint.ApiServer_HostAddress}}/api/mqttmessage
+Content-Type: application/json
+
+{
+  "topic": "shellies/shellyflood1/sensor/flood",
+  "message": "true"
+}
+
+###

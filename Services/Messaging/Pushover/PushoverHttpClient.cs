@@ -1,4 +1,5 @@
-﻿using Microsoft.Net.Http.Headers;
+﻿using System.Net;
+using Microsoft.Net.Http.Headers;
 
 namespace Cooliemint.ApiServer.Services.Messaging.Pushover
 {
@@ -23,6 +24,10 @@ namespace Cooliemint.ApiServer.Services.Messaging.Pushover
 
             // if request uri is null or empty the base address will be used
             var response = await _httpClient.PostAsync(string.Empty, content, cancellationToken);
+            if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                var badRequestContent = await response.Content.ReadAsStringAsync(cancellationToken);
+            }
         }
     }
 }

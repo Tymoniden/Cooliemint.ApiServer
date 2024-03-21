@@ -25,7 +25,7 @@ namespace Cooliemint.ApiServer.Mqtt
         {
             var configuration = _configurationService.GetConfiguration();
 
-            if(configuration != null && !string.IsNullOrEmpty(configuration?.MqttServer) && configuration.MqttPort > 0)
+            if(!string.IsNullOrEmpty(configuration.MqttServer) && configuration.MqttPort > 0)
             {
                 Debug.WriteLine("Configuration set at startup");
                 await ConnectToBroker(configuration.MqttServer!, configuration.MqttPort, cancellationToken);
@@ -33,10 +33,10 @@ namespace Cooliemint.ApiServer.Mqtt
             else
             {
                 Debug.WriteLine("Registering configuration changed event");
-                _configurationService.ConfigurationChanged += (sender, args) =>
+                _configurationService.ConfigurationChanged += (_, args) =>
                 {
                     Debug.WriteLine("Configuration was changed");
-                    if (args.Configuration != null && !string.IsNullOrEmpty(args.Configuration?.MqttServer) && args.Configuration.MqttPort > 0)
+                    if (!string.IsNullOrEmpty(args.Configuration.MqttServer) && args.Configuration.MqttPort > 0)
                     {
                         Task.Run(async () =>
                         {
