@@ -7,7 +7,7 @@
     <UserSecretsId>17a0c98c-6e7d-4279-803d-db484f5d5d3a</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <PublishProfile>DefaultContainer</PublishProfile>
-    <AssemblyVersion>1.1.1</AssemblyVersion>
+    <AssemblyVersion>1.2.0</AssemblyVersion>
     <ContainerImageTag>latest-arm</ContainerImageTag>
     <ContainerRepository>tymoniden/cooliemint-api</ContainerRepository>
   </PropertyGroup>
