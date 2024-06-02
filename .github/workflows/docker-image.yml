@@ -25,3 +25,4 @@ jobs:
 
       - name: Docker push
         run: docker push tymoniden/cooliemint-api:latest-arm
+        
