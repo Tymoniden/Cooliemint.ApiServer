@@ -1,0 +1,27 @@
+name: Build project and push to docker hub
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  push_to_registries:
+    name: Push Docker image
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check out the repo
+        env:
+          DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_ACCESSTOKEN }}
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+      - name: Build the docker image
+        run: docker build . --file Dockerfile --tag tymoniden/cooliemint-api:latest-arm
+
+      - name: Docker push
+        run: docker push tymoniden/cooliemint-api:latest-arm
