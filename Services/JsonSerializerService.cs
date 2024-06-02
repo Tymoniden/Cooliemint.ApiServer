@@ -1,7 +1,6 @@
-﻿using Cooliemint.ApiServer.Services;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace Cooliemint.ApiServer.Mqtt
+namespace Cooliemint.ApiServer.Services
 {
     public sealed class JsonSerializerService
     {

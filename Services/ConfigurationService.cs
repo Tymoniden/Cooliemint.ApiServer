@@ -1,5 +1,4 @@
 ﻿using Cooliemint.ApiServer.Controllers;
-using Cooliemint.ApiServer.Mqtt;
 using System.Diagnostics;
 
 namespace Cooliemint.ApiServer.Services

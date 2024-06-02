@@ -19,6 +19,32 @@
             return message;
         }
 
+        public PushoverMessageDto CreateMessage(string title, string message)
+        {
+            return CreateMessage(title, message, null, null);
+        }
+
+        public PushoverMessageDto CreateMessage(string title, string message, string? url , string? urlTitle)
+        {
+            var messageDto = new PushoverMessageDto
+            {
+                Title= title,
+                Message = message
+            };
+
+            if(url != null)
+            {
+                messageDto.Url = url;
+            }
+
+            if(urlTitle != null)
+            {
+                messageDto.UrlTitle = urlTitle;
+            }
+
+            return messageDto;
+        }
+
         public Dictionary<string, string> CreateDictionary(PushoverMessageDto message, string token, string user)
         {
             return new Dictionary<string, string>

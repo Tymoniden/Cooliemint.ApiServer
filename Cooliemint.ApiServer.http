@@ -9,3 +9,33 @@ Content-Type: application/json
 }
 
 ###
+
+POST {{Cooliemint.ApiServer_HostAddress}}/api/mqttmessage
+Content-Type: application/json
+
+{
+  "topic": "shellies/shelly17/status/window",
+  "message": "1"
+}
+
+###
+
+POST {{Cooliemint.ApiServer_HostAddress}}/api/configuration
+Content-Type: application/json
+
+{
+  "mqttServer": "broker.cooliemint.net",
+  "mqttPort": 1883
+}
+
+###
+
+POST {{Cooliemint.ApiServer_HostAddress}}/api/pushoveraccount
+Content-Type: application/json
+
+{
+  "applicationKey":"ac7m2x43uwmxeyui77sr93duteafyp",
+  "userKey":"gdm5irtu9yriqrxvqygmkfk9c85r1u"
+}
+
+###

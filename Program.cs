@@ -35,12 +35,23 @@ builder.Services.AddApiVersioning(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(p =>
+    {
+        p.AllowAnyOrigin();
+        p.AllowAnyMethod();
+        p.AllowAnyHeader();
+    });
+});
+
 builder.Services.AddHttpClient();
-builder.Services.RegisterCooliemintServices();
+
+builder.Services.RegisterCooliemintServices(builder.Configuration, builder.Environment);
 
 var app = builder.Build();
 
-app.Services.InitializeCooliemintApplication();
+app.Services.InitializeCooliemintApplication(app.Environment);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -61,6 +72,8 @@ if (app.Environment.IsDevelopment())
 }
 
 //app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthorization();
 

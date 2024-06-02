@@ -1,7 +1,5 @@
 ﻿// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-using Cooliemint.ApiServer.Mqtt;
-
 namespace Cooliemint.ApiServer.Services.Messaging.Pushover
 {
     public sealed class PushoverAccountStore

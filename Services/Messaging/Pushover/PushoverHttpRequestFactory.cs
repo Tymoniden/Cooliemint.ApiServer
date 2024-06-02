@@ -1,5 +1,4 @@
-﻿using Cooliemint.ApiServer.Mqtt;
-using CoolieMint.WebApp.Services.Notification.Pushover;
+﻿using CoolieMint.WebApp.Services.Notification.Pushover;
 using System.Diagnostics;
 using System.Text;
 

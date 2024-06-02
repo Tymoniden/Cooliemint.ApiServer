@@ -5,5 +5,6 @@
         public event EventHandler<MqttMessage>? MessageReceived;
 
         public void AddMessage(MqttMessage mqttMessage);
+        void Initialize();
     }
 }

@@ -14,11 +14,19 @@ namespace Cooliemint.ApiServer.Mqtt
         private IMqttClient? _client;
         private MqttFactory _mqttFactory = new MqttFactory();
 
-        public MqttClientHostedService(IMessageConverterService messageConverterService, IMessageStore messageStore, ConfigurationService configurationService)
+        public MqttClientHostedService(IMessageConverterService messageConverterService, IMessageStore messageStore, ConfigurationService configurationService, MqttMessageSenderService mqttMessageSenderService)
         {
             _messageConverterService = messageConverterService ?? throw new ArgumentNullException(nameof(messageConverterService));
             _messageStore = messageStore ?? throw new ArgumentNullException(nameof(messageStore));
             _configurationService = configurationService ?? throw new ArgumentNullException(nameof(configurationService));
+
+            mqttMessageSenderService.SendMessageEvent += async (_, message) =>
+            {
+                if(_client?.IsConnected == true)
+                {
+                    await _client.PublishBinaryAsync(message.Title, message.Body);
+                }
+            };
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)

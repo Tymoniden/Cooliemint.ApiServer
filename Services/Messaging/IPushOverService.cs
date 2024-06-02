@@ -6,5 +6,6 @@ namespace Cooliemint.ApiServer.Services.Messaging
     {
         Task SendMessage(AppNotification appNotification, CancellationToken cancellationToken);
         Task SendMessage(PushoverMessageDto message, CancellationToken cancellationToken);
+        Task SendMessageToAccount(PushoverMessageDto message, List<PushoverAccountDto> pushoverAccounts, CancellationToken cancellationToken);
     }
 }

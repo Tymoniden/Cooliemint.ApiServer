@@ -31,5 +31,13 @@ namespace Cooliemint.ApiServer.Services.Messaging
                 await _pushoverHttpClient.Send(message, account.ApplicationKey, account.UserKey, cancellationToken);
             }
         }
+
+        public async Task SendMessageToAccount(PushoverMessageDto message, List<PushoverAccountDto> pushoverAccounts,  CancellationToken cancellationToken)
+        {
+            foreach(var account in pushoverAccounts)
+            {
+                await _pushoverHttpClient.Send(message, account.ApplicationKey, account.UserKey, cancellationToken);
+            }
+        }
     }
 }
