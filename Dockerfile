@@ -1,13 +1,13 @@
 #See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0.3-bookworm-slim AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0.3-bookworm-slim-arm64v8 AS base
 WORKDIR /app
 ENV ASPNETCORE_ENVIRONMENT=Production
 ENV COOLIEMINT_VERSION=1.2.0
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0.3-bookworm-slim AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0.3-bookworm-slim-arm64v8 AS build
 WORKDIR /src
 COPY ["Cooliemint.ApiServer.csproj", "."]
 RUN dotnet restore -a arm64 "./Cooliemint.ApiServer.csproj"
