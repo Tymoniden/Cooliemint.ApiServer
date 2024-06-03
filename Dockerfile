@@ -10,7 +10,6 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["Cooliemint.ApiServer.csproj", "."]
-COPY ["Cooliemint.Shared.csproj", "."]
 RUN dotnet restore "./Cooliemint.ApiServer.csproj"
 COPY . .
 WORKDIR "/src/."
