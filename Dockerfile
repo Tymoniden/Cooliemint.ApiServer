@@ -7,7 +7,7 @@ ENV COOLIEMINT_VERSION=1.2.0
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM --platform=arm64 mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["Cooliemint.ApiServer.csproj", "."]
 RUN dotnet restore -a arm64 "./Cooliemint.ApiServer.csproj"
