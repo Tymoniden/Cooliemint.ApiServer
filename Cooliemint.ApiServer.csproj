@@ -6,9 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>17a0c98c-6e7d-4279-803d-db484f5d5d3a</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <PublishProfile>DefaultContainer</PublishProfile>
     <AssemblyVersion>1.2.0</AssemblyVersion>
-    <ContainerImageTags>1.2.0;latest-arm</ContainerImageTags>
+    <ContainerImageTags>1.2.0-arm;latest-arm</ContainerImageTags>
 	<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	<DockerfileContext>.</DockerfileContext>
   </PropertyGroup>
