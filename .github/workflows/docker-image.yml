@@ -21,7 +21,7 @@ jobs:
         run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
       - name: Build the docker image
-        run: docker build --platform linux/arm64 . --file Dockerfile --tag tymoniden/cooliemint-api:latest-arm
+        run: docker buildx build --platform linux/arm64 . --file Dockerfile --tag tymoniden/cooliemint-api:latest-arm
 
       - name: Docker push
         run: docker push tymoniden/cooliemint-api:latest-arm
