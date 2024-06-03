@@ -24,5 +24,5 @@ jobs:
         run: docker build . --file Dockerfile --tag tymoniden/cooliemint-api:latest-linux
 
       - name: Docker push
-        run: docker push tymoniden/cooliemint-api:latest-arm
+        run: docker push tymoniden/cooliemint-api:latest-linux
         
