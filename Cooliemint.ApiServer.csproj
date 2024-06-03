@@ -8,8 +8,7 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <PublishProfile>DefaultContainer</PublishProfile>
     <AssemblyVersion>1.2.0</AssemblyVersion>
-    <ContainerImageTag>latest-arm</ContainerImageTag>
-    <ContainerRepository>tymoniden/cooliemint-api</ContainerRepository>
+    <ContainerImageTags>1.2.0;latest-arm</ContainerImageTags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,13 +21,13 @@
 
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.6" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
-    <PackageReference Include="MQTTnet" Version="4.3.5.1141" />
+    <PackageReference Include="MQTTnet" Version="4.3.6.1152" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
 </Project>
