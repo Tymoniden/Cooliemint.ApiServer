@@ -9,6 +9,8 @@
     <PublishProfile>DefaultContainer</PublishProfile>
     <AssemblyVersion>1.2.0</AssemblyVersion>
     <ContainerImageTags>1.2.0;latest-arm</ContainerImageTags>
+	<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	<DockerfileContext>.</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
