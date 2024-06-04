@@ -3,7 +3,7 @@ name: Build project and push to docker hub
 on:
   push:
     branches:
-      - main
+      - main_deactivated
 
 jobs:
   push_to_registries:
