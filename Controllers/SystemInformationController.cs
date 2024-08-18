@@ -7,7 +7,7 @@ namespace Cooliemint.ApiServer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SystemInformationController : ControllerBase
+    public class SystemInformationController(IWebHostEnvironment webHostEnvironment) : ControllerBase
     {
         // GET: api/<SystemInformationController>
         [HttpGet]
@@ -15,15 +15,9 @@ namespace Cooliemint.ApiServer.Controllers
         {
             Assembly? assembly = Assembly.GetExecutingAssembly();
             
-            return new SystemInformation
-            {
-                AssemblyVersion = assembly.GetName().Version ?? new Version(1, 0, 0)
-            };
+            return new(assembly.GetName().Version ?? new Version(1, 0, 0), webHostEnvironment.EnvironmentName);
         }
     }
 
-    public sealed class SystemInformation
-    {
-        public Version AssemblyVersion { get; set; } = new Version(1, 0, 0);
-    }
+    public sealed record SystemInformation(Version AssemblyVersion, string EnvironmentName);
 }

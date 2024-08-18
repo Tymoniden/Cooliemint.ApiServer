@@ -17,7 +17,11 @@ namespace Cooliemint.ApiServer.Services.Repositories
 
         public async Task<Shared.Dtos.User> Get(int id, CancellationToken cancellationToken)
         {
-            return userFactory.CreateUser(await dbContext.Users.Include(u => u.Notifications).FirstAsync(x => x.Id == id, cancellationToken));
+            var user = await dbContext
+                .Users.Include(u => u.Notifications)
+                .ThenInclude(n => n.Notification)
+                .FirstAsync(x => x.Id == id, cancellationToken);
+            return userFactory.CreateUser(user);
         }
 
         public async Task<Shared.Dtos.User> Add(Shared.Dtos.User user, CancellationToken cancellationToken)

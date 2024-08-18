@@ -1,4 +1,4 @@
-﻿using Cooliemint.Shared.Dtos;
+﻿using Cooliemint.ApiServer.Shared.Dtos;
 
 namespace Cooliemint.ApiServer.Services.Factories
 {
@@ -6,24 +6,19 @@ namespace Cooliemint.ApiServer.Services.Factories
     {
         public UserNotification CreateNotification(Models.UserNotification notification)
         {
-            return new UserNotification
-            {
-                Id = notification.Id,
-                UserId = notification.UserId,
-                NotificationId = notification.NotificationId,
-                IsActive = notification.IsActive
-            };
+            return new UserNotification(notification.Id, notification.User.Id, notification.Notification.Id, notification.IsActive);
         }
 
         public Models.UserNotification CreateNotification(UserNotification notification)
         {
-            return new Models.UserNotification
-            {
-                Id = notification.Id,
-                UserId = notification.UserId,
-                NotificationId = notification.NotificationId,
-                IsActive = notification.IsActive
-            };
+            throw new NotImplementedException();
+            //return new Models.UserNotification
+            //{
+            //    Id = notification.Id,
+            //    User = notification.User,
+            //    NotificationId = notification.Notification,
+            //    IsActive = notification.IsActive
+            //};
         }
     }
 }

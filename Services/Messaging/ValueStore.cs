@@ -2,25 +2,23 @@
 
 namespace Cooliemint.ApiServer.Services.Messaging
 {
-    public class ValueStore
+    public class ValueStore(IMessageConverterService messageConverterService)
     {
-        private readonly IMessageConverterService messageConverterService;
-        Dictionary<string, ValueSet> values = new();
+        Dictionary<string, ValueSet> values = [];
 
-        public ValueStore(IMessageConverterService messageConverterService)
-        {
-            this.messageConverterService = messageConverterService ?? throw new ArgumentNullException(nameof(messageConverterService));
-        }
+        public event EventHandler<ValueSet>? ValueSetChanged;
 
         public void AddValue(string key, object value)
         {
             if (values.ContainsKey(key) && values[key].Value.Equals(value))
             {
                 values[key] = new ValueSet(key, value, values[key].CreationTime, DateTime.Now);
+                ValueSetChanged?.Invoke(null, values[key]);
                 return;
             }
 
             values[key] = new ValueSet(key, value, DateTime.Now, DateTime.Now);
+            ValueSetChanged?.Invoke(null, values[key]);
         }
 
         public T? GetValue<T>(string key)
@@ -56,6 +54,11 @@ namespace Cooliemint.ApiServer.Services.Messaging
             }
 
             return null;
+        }
+
+        public Dictionary<string,ValueSet> GetEverything()
+        {
+            return values;
         }
     }
 }

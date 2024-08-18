@@ -1,6 +1,6 @@
 ﻿namespace Cooliemint.ApiServer.Models
 {
-    public class Rule
+    public class RuleModel
     {
         public int Id { get; set; }
 
@@ -8,11 +8,9 @@
 
         public required string Description { get; set; }
 
-        public List<RulePart> Parts { get; set; } = [];
+        public List<RulePartModel> Parts { get; set; } = [];
 
-        public List<RuleCommand> Commands { get; set; } = [];
-
-        public List<ResetCondition> ResetConditions { get; set; } = [];
+        public List<RuleCommandModel> Commands { get; set; } = [];
 
         public List<RuleNotification> Notifications { get; set; } = [];
 

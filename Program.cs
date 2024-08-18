@@ -1,6 +1,8 @@
 using Asp.Versioning;
 using Cooliemint.ApiServer.Extensions;
+using Cooliemint.ApiServer.Models;
 using Cooliemint.ApiServer.Swagger;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -53,8 +55,19 @@ var app = builder.Build();
 
 app.Services.InitializeCooliemintApplication(app.Environment);
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<CooliemintDbContext>();
+    var migrations = db.Database.GetPendingMigrations();
+
+    if (migrations.Any())
+    {
+        db.Database.Migrate();
+    }
+}
+
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(options =>

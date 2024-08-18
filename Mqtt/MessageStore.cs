@@ -36,7 +36,7 @@ namespace Cooliemint.ApiServer.Mqtt
                         valueStore.AddValue(childItems.Key, childItems.Value);
                     }
                 }
-                catch (Exception e)
+                catch
                 {
 
                 }

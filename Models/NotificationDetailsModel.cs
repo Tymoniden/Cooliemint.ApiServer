@@ -1,9 +1,9 @@
 ﻿namespace Cooliemint.ApiServer.Models
 {
-    public class NotificationDetails
+    public class NotificationDetailsModel
     {
         public int Id { get; set; }
-        public required Notification Notification { get; set; }
+        public required NotificationModel Notification { get; set; }
         public required string Title { get; set; }
         public required string Description { get; set; }
         public string? LongDescription { get; set; }

@@ -4,39 +4,83 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Cooliemint.ApiServer.Services.Messaging
 {
-    public class NotificationService(IDbContextFactory<CooliemintDbContext> dbContextFactory, 
+    public class NotificationService(ILogger<NotificationService> logger,
+        IDbContextFactory<CooliemintDbContext> dbContextFactory, 
         IPushOverService pushoverService, 
         JsonSerializerService jsonSerializerService, 
-        PushoverMessageFactory pushoverMessageFactory)
+        PushoverMessageFactory pushoverMessageFactory, 
+        ValueStoreStringReplacementService valueStoreStringReplacementService)
     {
-        public async Task Notify(Rule rule, CancellationToken cancellationToken)
+        public Task NotifyExecution(int ruleId, CancellationToken cancellationToken)
         {
+            return Notify(ruleId, NotificationType.RuleExecuted, cancellationToken);
+        }
+
+        public Task NotifyReset(int ruleId, CancellationToken cancellationToken)
+        {
+            return Notify(ruleId, NotificationType.RuleReset, cancellationToken);
+        }
+
+        public async Task Notify(int ruleId, NotificationType type, CancellationToken cancellationToken)
+        {
+            logger.LogInformation($"Notifing rule: {ruleId}");
             using var ctx = await dbContextFactory.CreateDbContextAsync();
-            
-            var contactProviders = from rn in ctx.RuleNotifications
-                    join un in ctx.UserNotifications on rn.Rule.Id equals un.NotificationId
-                    join ucp in ctx.UserContactProviders on un.UserId equals ucp.User.Id
-                    join cp in ctx.ContactProviders on ucp.ContactProvider.Id equals cp.Id
-                    join nd in ctx.NotificationDetails on un.NotificationId equals nd.Notification.Id
-                    where rn.Rule.Id == rule.Id && un.IsActive
-                    select new { ContactProvider = cp, NotificationDetails = nd };
-            
-            foreach(var contactProvider in contactProviders)
+
+            var contactProviders = ctx.Notifications
+                .Include(n => n.RuleNotifications)
+                    .ThenInclude(rn => rn.Rule)
+                .Include(n => n.UserNotifications)
+                    .ThenInclude(un => un.Notification)
+                .Include(n => n.UserNotifications)
+                    .ThenInclude(un => un.User)
+                        .ThenInclude(u => u.ContactProviders)
+                            .ThenInclude(cp => cp.ContactProvider)
+                .Where(n =>
+                    n.RuleNotifications.Any(r => r.Rule.Id == ruleId) &&
+                    n.UserNotifications.Any(un => un.IsActive && un.Notification.Type == type))
+                .SelectMany(n => n.UserNotifications)
+                .SelectMany(un => un.User.ContactProviders)
+                .Select(cp => cp.ContactProvider)
+                .Distinct()
+                .ToList();
+
+            var notificationDetails = ctx.Notifications
+                .Include(n => n.Details)
+                .Include(n => n.RuleNotifications)
+                    .ThenInclude(rn => rn.Rule)
+                .Include(n => n.UserNotifications)
+                    .ThenInclude(un => un.Notification)
+                .Include(n => n.UserNotifications)
+                .Where(n =>
+                    n.RuleNotifications.Any(r => r.Rule.Id == ruleId) &&
+                    n.UserNotifications.Any(un => un.IsActive && un.Notification.Type == type))
+                .SelectMany(n => n.UserNotifications)
+                .SelectMany(un => un.Notification.Details)
+                .Distinct()
+                .ToList();
+
+            logger.LogInformation($"found #{contactProviders.Count()} contactProviders.");
+            foreach (var notificationDetail in notificationDetails)
             {
-                await CallContactProvider(contactProvider.ContactProvider, contactProvider.NotificationDetails, cancellationToken);
+                logger.LogInformation($"Notifing: {ruleId}:{notificationDetail.Title}");
+                foreach (var contactProvider in contactProviders)
+                {
+                    logger.LogInformation($"Notifing: {notificationDetail.Title}->{contactProvider.Description}");
+                    await CallContactProvider(contactProvider, notificationDetail, cancellationToken);
+                }
             }
         }
 
-        public async Task CallContactProvider(ContactProvider contactProvider, NotificationDetails notificationDetails, CancellationToken cancellationToken)
+        public async Task CallContactProvider(ContactProvider contactProvider, NotificationDetailsModel notificationDetails, CancellationToken cancellationToken)
         {
             switch (contactProvider.Type)
             {
-                case ContactProviderType.Email:
+                case ContactProviderModelType.Email:
                     break;
-                case ContactProviderType.Pushover:
+                case ContactProviderModelType.Pushover:
                     var account = jsonSerializerService.Deserialize<PushoverAccountDto>(contactProvider.Configuration);
-                    var message = pushoverMessageFactory.CreateMessage(notificationDetails.Title, notificationDetails.Description);
-
+                    var message = pushoverMessageFactory.CreateMessage(notificationDetails.Title, valueStoreStringReplacementService.InsertValueStoreValues(notificationDetails.Description));
+                    logger.LogInformation($"sending message: [{message.Title}] to [{account?.Id}]");
                     if (account != null && message != null)
                     {    
                         await pushoverService.SendMessageToAccount(message, [account], cancellationToken);

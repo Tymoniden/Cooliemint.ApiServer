@@ -1,7 +1,6 @@
 ﻿using Cooliemint.ApiServer.Services.Repositories;
-using Cooliemint.Shared.Dtos;
+using Cooliemint.ApiServer.Shared.Dtos;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.CompilerServices;
 
 namespace Cooliemint.ApiServer.Controllers
 {

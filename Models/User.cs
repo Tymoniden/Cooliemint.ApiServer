@@ -9,5 +9,7 @@
         public string? Email { get; set; }
 
         public ICollection<UserNotification> Notifications { get; set; } = [];
+
+        public ICollection<UserContactProvider> ContactProviders { get; set; } = [];
     }
 }

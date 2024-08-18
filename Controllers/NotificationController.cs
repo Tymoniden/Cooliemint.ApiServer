@@ -1,5 +1,5 @@
 ﻿using Cooliemint.ApiServer.Services.Repositories;
-using Cooliemint.Shared.Dtos;
+using Cooliemint.ApiServer.Shared.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -13,28 +13,28 @@ namespace Cooliemint.ApiServer.Controllers
 
         // GET: api/<NotifcationController>
         [HttpGet]
-        public IAsyncEnumerable<Notification> Get(CancellationToken cancellationToken)
+        public IAsyncEnumerable<NotificationDto> Get(CancellationToken cancellationToken)
         {
             return notificationRepository.GetAll(0, 100, cancellationToken);
         }
 
         // GET api/<NotifcationController>/5
         [HttpGet("{id}")]
-        public async Task<Notification> Get(long id, CancellationToken cancellationToken)
+        public async Task<NotificationDto> Get(long id, CancellationToken cancellationToken)
         {
             return await notificationRepository.Get(id, cancellationToken);
         }
 
         // POST api/<NotifcationController>
         [HttpPost]
-        public async Task<Notification> Post([FromBody] Notification notification, CancellationToken cancellationToken)
+        public async Task<NotificationDto> Post([FromBody] NotificationDto notification, CancellationToken cancellationToken)
         {
             return await notificationRepository.Add(notification, cancellationToken);
         }
 
         // PUT api/<NotifcationController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Notification notification)
+        public void Put(int id, [FromBody] NotificationDto notification)
         {
         }
 

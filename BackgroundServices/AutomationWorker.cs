@@ -23,8 +23,6 @@ namespace Cooliemint.ApiServer.BackgroundServices
             {
                 await using(var scope = serviceProvider.CreateAsyncScope())
                 {
-                    await automationQueueManager.Initialize();
-
                     while (await timer.WaitForNextTickAsync(stoppingToken))
                     {
                         await automationQueueManager.ExecuteQueue(stoppingToken);

@@ -2,21 +2,20 @@
 
 namespace Cooliemint.ApiServer.Models
 {
-    public class RulePart
+    public class RulePartModel
     {
         public int Id { get; set; }
+
+        public RulePartType Type { get; set; }
 
         public RulePartDescriptor Descriptor { get; set; }
 
         public required string Description { get; set; }
 
-        public required string Value { get; set; }
-    }
+        public required string OperandLeft { get; set; }
 
-    public class ResetCondition
-    {
-        public int Id { get; set; }
-        public Rule? Rule { get; set; }
-        public RulePart? RulePart { get; set; }
+        public required string OperandRight { get; set; }
+
+        public required RulePartOperation Operation { get; set; }
     }
 }

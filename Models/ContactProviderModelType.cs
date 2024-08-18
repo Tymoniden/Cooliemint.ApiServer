@@ -1,6 +1,6 @@
 ﻿namespace Cooliemint.ApiServer.Models
 {
-    public enum ContactProviderType
+    public enum ContactProviderModelType
     {
         Email = 0,
         Pushover = 1

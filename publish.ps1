@@ -1,1 +1,1 @@
-dotnet publish --arch arm64 --os linux -c Release
+dotnet publish --os linux --arch arm64 /t:PublishContainer .\Cooliemint.ApiServer.csproj

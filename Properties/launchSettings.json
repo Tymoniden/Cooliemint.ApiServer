@@ -10,6 +10,16 @@
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5257"
     },
+    "production": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Production"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5257"
+    },
     "http": {
       "commandName": "Project",
       "launchBrowser": true,
